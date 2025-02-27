@@ -97,6 +97,8 @@ static void dump_params(const char *msg, byte *params)
   fprintf(stderr,"\n");
 }
 
+/*  BBC 32bit mantissa: 0,1....  * 2^(x)   */
+/* IEEE 23bit mantissa: 1,.....  * 2^(x-1) */
 static float real2f(byte *params)
 {
   DWORD m;
@@ -115,7 +117,7 @@ static float real2f(byte *params)
   if (0 == x)
     u.f = (INT32)m;
   else {
-    u.pat = FLOAT(s,x,(m >> 9));
+    u.pat = FLOAT(s,(x - 1),(m >> 8));
   }
 
   return u.f;
@@ -140,18 +142,21 @@ static void f2real(float f, byte *params)
   params[4] = 0;
   return;
 
+  f = -5.0;
   u.f = f; pat = u.pat;
   m = (0x7FFFFF & pat); pat >>= 23;
   x = (    0xFF & pat); pat >>=  8;
   s = pat;
-  fprintf(stderr,"f2real: %f %u %u %u %08x\n",f,s,x,m,u.pat);
 
-  m = ((s ? 0x800000 : 0) | m) << 8;
+  /* correct mantissa and exponent */
+  m = ((s ? 0x800000 : 0) | m) << 8; x++;
+  fprintf(stderr,"f2real: %f %u %02x %08x %08x\n",f,s,x,m,u.pat);
+
   for (i = 0; i < 4; i++) {
     params[i] = 0xFF & m;
     m >>= 8;
   }
-  params[4] = x;
+  params[4] = x + 1;
   dump_params("f2real", params);
 }
 

@@ -1,0 +1,20 @@
+ 10 NUMBER=0
+ 20 DIM A% -1
+ 30 REPEAT
+ 40   INPUT"NUMBER PLEASE "NUMBER
+ 50   PRINT "& ";
+ 60   :
+ 70   REM Step through mantissa from MSB to LSB
+ 80   FOR I%=1 TO 4
+ 90     REM Look at value at address A%-I%
+100     NUM$=STR$~(A%?-I%)
+110     IF LEN(NUM$)=1 NUM$="0"+NUM$
+120     PRINT NUM$;" ";
+130   NEXT
+140   :
+150   REM Look at exponent at address A%-5
+160   N%=A%?-5
+170   NUM$=STR$~(N%)
+180   IF LEN(NUM$)=1 NUM$="0"+NUM$
+190   PRINT " & "+NUM$''
+200 UNTIL NUMBER=0
