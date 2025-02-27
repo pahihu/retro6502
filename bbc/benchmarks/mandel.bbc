@@ -1,0 +1,44 @@
+  100REM A BASIC, ASCII MANDELBROT
+  110REM
+  120REM This implementation copyright (c) 2019, Gordon Henderson
+  121REM ... Updated 2023 because I could.
+  130REM
+  140REM Permission to use/abuse anywhere for any purpose granted, but
+  150REM it comes with no warranty whatsoever. Good luck!
+  160REM
+  170C$ = ".,'~=+:;[/<&?oxOX# " : REM 'Pallet' Lightest to darkest...
+  180SO = 1 : REM Set to 0 if your MID$() indexes from 0.
+  190MI = LEN(C$)
+  200MX = 4
+  210LS = -2.0
+  220TP = 1.25
+  230XS = 2.5
+  240YS = -2.5
+  250W = 64
+  260H = 48
+  270SX = XS / W
+  280SY = YS / H
+  290TIME=0:PRINT "Start"
+  300FORY=0TOH
+  310CY=Y*SY+TP
+  320FORX=0TOW
+  330CX=X*SX+LS
+  340ZX=0
+  350ZY=0
+  360CC=SO
+  370X2=ZX*ZX
+  380Y2=ZY*ZY
+  390IFCC>MI THEN460
+  400IF(X2+Y2)>MX THEN460
+  410T=X2-Y2+CX
+  420ZY=2*ZX*ZY+CY
+  430ZX=T
+  440CC=CC+1
+  450GOTO370
+  460PRINTMID$(C$,CC-SO,1);
+  470NEXT
+  480PRINT
+  490NEXT
+  500PRINT
+  510Z=TIME:PRINT "Time: ";Z/100; " seconds."
+  520END

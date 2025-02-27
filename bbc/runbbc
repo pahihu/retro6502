@@ -1,0 +1,2 @@
+#!/bin/bash
+exec run6502 -l 8000 bbc.img -B

@@ -1,0 +1,6 @@
+#!/bin/bash
+for f in $(ls benchmarks/*.bbc)
+do
+  echo $f
+  ./runbas $f
+done

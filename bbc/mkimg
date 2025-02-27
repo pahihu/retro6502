@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -f bbc.img
+run6502 -l C000 OS12.ROM -l 8000 BASIC2.ROM -s 8000 +8000 bbc.img -x

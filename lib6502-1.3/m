@@ -1,0 +1,7 @@
+#!/bin/bash
+make clean
+make 2>&1 | tee make.log
+# if [ -s run6502 ];
+# then
+#   cp run6502 ~/bin/e65
+# fi

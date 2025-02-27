@@ -1,0 +1,17 @@
+A65 bug fixes and changes
+
+1.04  To improve MOS Technology compatibility, the following restrictions
+      have been made: labels may not begin with an underscore or end with
+      a colon; white space always acts as a field delimiter.
+
+1.03  Location counter changes would not be reflected in binary output
+      file. Comment character ';' could not be placed immediately after
+      some operands. Could not specify symbol table greater than 32767
+      bytes. Improved label parsing and error reporting. Default symbol
+      table size increased to 35000 bytes.
+
+1.02  Error messages and the lines they reference are now directed to
+      standard output to allow piping to a file or to the screen using
+      MORE. Maximum label length reduced to 16. Minor display fixes.
+
+1.0   First release

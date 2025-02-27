@@ -1,0 +1,12 @@
+   10REM Noels Retro Lab BASIC Benchmark
+   20Z=TIME:PRINT"S"
+   30FOR I=1 TO 10
+   40S=0
+   50FOR J=1 TO 1000
+   60S=S+J
+   70NEXT J
+   80PRINT ".";
+   90NEXT I
+  100PRINT S
+  110PRINT"E":E=TIME:PRINT E-Z
+  120END

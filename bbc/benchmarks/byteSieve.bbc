@@ -1,0 +1,21 @@
+  100REM Byte Sieve - BBC Basic Version
+  110TIME=0
+  120S=4095
+  130DIMF(S+1)
+  140PRINT "Only 1 iteration"
+  150C=0
+  160FORI=0TOS
+  170F(I)=1
+  180NEXTI
+  190FORI=0TOS
+  200IFF(I)=0 THEN280
+  210P=I+I+3
+  220K=I+P
+  230IFK>S THEN270
+  240F(K)=0
+  250K=K+P
+  260GOTO230
+  270C=C+1
+  280NEXTI
+  290T=TIME : PRINTC," Primes in "; T/100; " seconds."
+  300END

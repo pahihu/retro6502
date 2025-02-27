@@ -1,0 +1,6 @@
+#!/bin/bash
+cp $1 $$.tmp
+echo "RUN" >> $$.tmp
+echo -ne "\0x03" >> $$.tmp
+cat $$.tmp | ./runbbc
+rm -f $$.tmp

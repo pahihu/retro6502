@@ -1,0 +1,6 @@
+A65 1.04  6502 cross-assembler (MOS Technology compatible)
+
+Most source files intended for the MOS Technology 6502 assembler
+will assemble correctly under A65.
+
+Includes C source code and MS-DOS executable.

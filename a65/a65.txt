@@ -1,0 +1,232 @@
+                        A65 User Notes
+                        --------------
+
+A65 is an assembler for the MOS Technology 6502 microprocessor.
+
+Most source files intended for the MOS Technology 6502 assembler
+will assemble correctly under A65.
+
+A65 is a re-work of "as6502" - a 6502 cross-assembler written by
+J. H. Van Ornum and modified by J. Swank.
+
+
+SOURCE LINE FORMAT
+------------------
+
+<label> <operation> <operand> <comment>
+
+Each field is terminated by one or more spaces, a tab or a semicolon
+(which begins the comment field immediately).
+
+
+LABEL FIELD
+-----------
+If the first character is a semicolon (;) the entire line is a
+comment.  If the first character is a space, the label field is null.
+
+Labels are alphanumeric strings beginning with A - Z and followed
+by any alphanumeric character (A-Z, 0-9) or underscore (_).
+
+Labels may be any length but are significant to only 16 characters.
+A,X,Y,S,P are reserved characters and may not be used as labels.
+
+Labels are NOT case-sensitive by default (this may be changed with
+the -c switch at the command-line).
+
+
+OPERATION FIELD
+---------------
+Operation field MUST be preceded by at least one space or tab
+character.  Mnemonic names may be either upper or lower case.
+
+6502 machine operations:
+
+   ADC     BMI     CLD     DEX     JSR     PHA     RTS     STY
+   AND     BNE     CLI     DEY     LDA     PHP     SBC     TAX
+   ASL     BPL     CLV     EOR     LDX     PLA     SEC     TAY
+   BCC     BRK     CMP     INC     LDY     PLP     SED     TSX
+   BCS     BVC     CPX     INX     LSR     ROL     SEI     TXA
+   BEQ     BVS     CPY     INY     NOP     ROR     STA     TXS
+   BIT     CLC     DEC     JMP     ORA     RTI     STX     TYA
+
+Pseudo operations:
+
+   =      Equate label name to operand field value; a space is
+          not needed before operand
+   *=     Set location counter to operand field value; a space is
+          not needed before operand
+   .WORD  Assign 16 bit value (low/high byte order) of operand
+          field to next two locations 
+   .DBYTE Assign 16 bit value (high/low byte order) of operand
+          field to next two locations
+   .BYTE  Assign 8 bit value or ascii string to next location
+   .PAGE  Start a new listing page and optionally specify a title
+          for the page heading; this source line is not listed
+   .END   Signal end of assembly for the current source file
+   .OPT   Set assembly options; this source line is not listed
+   .SKIP  Skip lines (not implemented)
+
+.OPT requires one or more parameters separated by a comma:
+
+   ERRORS, NOERRORS      controls generation of error file
+   LIST, NOLIST          controls generation of listing file
+   SYMBOL, NOSYM         controls generation of symbol listing
+   GENERATE, NOGENERATE  controls printing of ASCII strings
+
+ERRORS, NOERRORS, NOGENERATE have no effect under A65 but may be
+present.  SKIP also has no effect but will generate a warning.
+
+The default for A65 is:
+
+   .OPT  GENERATE,NOLIST,NOSYM
+
+Names for the psuedo mnemonics and option parameters may be
+shortened to three characters.
+
+
+OPERAND FIELD
+-------------
+The operand field may include labels, numbers or strings.
+
+Operand field expressions use infix notation and are evaluated
+strictly from left to right with NO imbedded spaces.  One level
+of parenthesis using square brackets [] are permitted.
+
+The asterisk (*) is used as the label for the current location
+counter.
+
+Numbers are decimal by default.  Binary, octal or hexadecimal
+numbers may be specified by prefixing them as follows:
+ 
+   %       binary prefix
+   @       octal prefix
+   $       hexadecimal prefix
+
+Ascii character strings are delimited with an apostrophe (').
+Where the apostrophe character itself is desired in a string,
+use two apostrophes.  Some examples -
+
+   LDA   #'J
+   LDA   #''
+   LDA   #'''
+   .BYT  'Jim''s bicycle'
+   .BYT  ['A'+$80]
+
+Operand field operations and the corresponding symbols are:
+
+   +       addition
+   -       subtraction
+   /       division
+   *       multiplication
+   %       modulo (remainder after integer division)
+   ^       logical XOR
+   ~       NOT (one's complement)
+   &       logical AND
+   |       logical OR
+   <       low byte
+   >       high byte
+
+Addressing modes are represented as follows:
+
+   LDA #aa        immediate addressing
+   LDA d          direct addessing
+   LDA aa         page zero addressing
+   ASL d          accumulator addressing
+   BRK            implied addressing
+   LDA (aa,X)     indirect,X addressing
+   LDA (aa),Y     indirect,Y addressing
+   LDA aa,X       zero page,X addressing
+   LDA d,X        absolute,X addressing
+   LDA d,Y        absolute,Y addressing
+   BCC *-$10      relative addressing
+   JMP (d)        indirect addressing
+   LDX aa,Y       zero page,Y addressing
+
+
+INVOKING A65
+------------
+   A65 [options] file1 [file2 file3 ...]
+
+Switch options:
+
+   -b     output binary file  [as "6502.bin"]
+   -c     symbols case sensitive
+   -l     output listing
+   -m     output MOS Technology hex object file  [as "6502.hex"]
+   -o     output INTEL hex object file  [as "6502.hex"]
+   -p n   page length n (0 = no paging)
+   -s     include symbol table in listing
+   -t n   symbol table size n
+   -w n   print line size n
+
+A65 allows several source files to be assemble with one invocation.
+
+The listing file is sent to the standard output (screen).  Use
+MS-DOS redirection to send to a disk file or device.
+
+Typing A65 without parameters will bring up a help screen.
+
+
+ERROR MESSAGES
+--------------
+   Create error for file ...
+   High/low byte operator misplaced
+   Invalid addressing mode
+   Invalid binary reposition (below start of code)
+   Invalid branch address
+   Invalid linesize
+   Invalid operand field
+   Invalid operation code
+   Invalid option
+   Invalid pagesize
+   Invalid symbol table size
+   Label multiply defined
+   Missing ] in expression
+   Missing [ in expression
+   Not implemented
+   Open error for file ...
+   Operand field missing
+   Operand field size error
+   Symbol is reserved (A,X,Y,S,P)
+   Symbol table allocation failed - specify smaller size
+   Symbol table full
+   Sync error (pass 1 value not equal to pass 2 value)
+   Title too long
+   Too many references
+   Too many [ in expression
+   Undefined symbol in operand field
+   Unterminated ASCII string
+  
+
+MOS TECHNOLOGY COMPATIBILITY
+----------------------------
+
+1. Assembling MOS Technology compatible source files:
+
+Most source files intended for the MOS Technology 6502 assembler will
+assemble correctly using A65.  The exceptions are those which contain
+the following psuedo-operations:
+
+   .MAC .MND .FIL .LIB
+
+Under A65 .SKIP may be present but has no effect.  Similarly, .OPT
+may include ERRORS, NOERRORS or NOGENERATE but will have no effect.
+
+2. Writing MOS Technology compatible source files:
+
+If it is desired to produce MOS Technology compatible source files,
+please note the following restrictions:
+
+ - Labels should be limited to 6 characters.  Only alpha-numeric
+   characters are permitted (A-Z, 0-9); the first character must
+   be alpha.
+
+ - Permitted arithmetic operators are limited to addition,
+   subtraction, multiplication and division.  Modulo, AND, OR, XOR,
+   NOT should not be used and expressions should not be enclosed
+   by parenthesis.
+
+ - Apart from comment lines and embedded strings, all source code
+   should be written in uppercase.
+
+
