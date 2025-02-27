@@ -1,5 +1,7 @@
 # retro6502
-6502 assembler, disassembler, emulator. BBC BASIC. For macOS and WSL.
+6502 assembler, disassembler, emulator. Run BBC BASIC.
+The wheel doesn't need to be reinvented.
+Works on macOS and WSL.
 
 Some tools for the 6502 nostalgia:
 
