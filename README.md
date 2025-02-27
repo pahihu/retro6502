@@ -7,7 +7,7 @@ Some tools for the 6502 nostalgia:
 
    * [d65/](https://github.com/pahihu/retro6502/tree/main/d65) - 6502 [disassembler](http://forum.6502.org/viewtopic.php?t=3644) by Cray Ze.
 
-   * [lib6502/](https://github.com/pahihu/retro6502/tree/main/lib6502) - 6502 MPU [emulator](https://www.piumarta.com/software/lib6502/) by Ian Piumarta.  Added TIME OSWORD. The 5byte FP conversion still buggy.
+   * [lib6502/](https://github.com/pahihu/retro6502/tree/main/lib6502-1.3) - 6502 MPU [emulator](https://www.piumarta.com/software/lib6502/) by Ian Piumarta.  Added TIME OSWORD. The 5byte FP conversion still buggy.
 
    * [bbc/](https://github.com/pahihu/retro6502/tree/main/bbc) - lib6502 example to run BBC Model B BASIC. The [benchmarks](https://projects.drogon.net/retro-basic-and-bcpl-benchmarks/) from Gordon Henderson.
 
