@@ -13,5 +13,7 @@ Some tools for the 6502 nostalgia:
 
    * [bbc/](https://github.com/pahihu/retro6502/tree/main/bbc) - lib6502 example to run BBC Model B BASIC. The [benchmarks](https://projects.drogon.net/retro-basic-and-bcpl-benchmarks/) from Gordon Henderson.
 
+**NOTE**: If you want to try the real thing... [Neo6502](https://www.olimex.com/Products/Retro-Computers/Neo6502/open-source-hardware) from Olimex!
+
 
 Good luck!
