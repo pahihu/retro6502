@@ -1,0 +1,125 @@
+                            indicator
+00  X,ind   V   (aa,X)  1   ,X)
+04  zp      z   aa      1           a < 256
+08  #       #   #       1   #
+0C  abs     a   aaaa    2           a > 255
+10  ind,Y   W   (aa),Y  1   ),Y
+14  zp,X    x   aa,X    1   ,X      a < 256
+18  abs,Y   Y   aaaa,Y  2   ,Y      a > 255
+1C  abs,X   X   aaaa,X  2   ,X      a > 255
+    A       A   A       0   A
+    ind     I   (aaaa)  2   )
+    zp,y    y   aa,Y    1   ,Y      a < 256
+    implied .               no arg
+    rel     r                       -128 <= P-a < 127
+    unknown -
+
+15bit hash {A,D,C}  in 256 place => (h & 0xFF)
+value is zzz000xx for main instructions or zzzyyyxx for subops
+- if amode is '.' then m should be '.'
+- if amode is anything else (JSR,Bxx,JMP) then search for it in ops[]
+    JSR is fixed at 'a'
+    Bxx is fixed at 'r'
+    JMP + 'a','I' search in 2 rows
+
+08  A       A   A       0   only for ASL ROL LSR ROR
+0C  ind     I   (aaaa)  2   only for JMP
+14  zp,Y    y   aa,Y    1   only for STX/LDX
+
+char *ops[3]={
+/*   00 20 40 60 80 A0 C0 E0    */
+    "BRKBITJMPJMPSTYLDYCPYCPX",
+    "ORAANDEORADCSTALDACMPSBC",
+    "ASLROLLSRRORSTXLDXDECINC"
+};
+        
+char *subops[2][4]={
+{   /* 0 */
+    /* 00 */ "BRKJSRRTIRTS-  #  #  #  ",
+    /* 08 */ "PHPPLPPHAPLADEYTAYINYINX",
+    /* 10 */ "BPLBMIBVCBVSBCCBCSBNEBEQ",
+    /* 18 */ "CLCSECCLISEITYACLVCLDSED"
+},
+{   /* 2 */
+    /* 00 */ "",
+    /* 08 */ "A  A  A  A  TXATAXDEXNOP",
+    /* 10 */ "",
+    /* 18 */ "-  -  -  -  TXSTSX-  -  "
+}
+};
+
+char *amodes[3][8]={
+{
+      /*     1111*/
+      /* 048C048C*/
+/*BRK*/ ".-.-.-.-",
+/*BIT*/ ".z.a.-.-",
+/*JMP*/ ".-.a.-.-",
+/*JMP*/ ".-.I.-.-",
+/*STY*/ "-z.a.x.-",
+/*LDY*/ "#z.a.x.X",
+/*CPY*/ "#z.a.-.-",
+/*CPX*/ "#z.a.-.-"
+},
+{
+      /*     1111*/
+      /* 048C048C*/
+/*ORA*/ "Vz#aWxYX",
+/*AND*/ "Vz#aWxYX",
+/*EOR*/ "Vz#aWxYX",
+/*ADC*/ "Vz#aWxYX",
+/*STA*/ "Vz-aWxYX", /**/
+/*LDA*/ "Vz#aWxYX",
+/*CMP*/ "Vz#aWxYX",
+/*SBC*/ "Vz#aWxYX"
+},
+{
+      /*     1111*/
+      /* 048C048C*/
+/*ASL*/ "-zAa-x-X",
+/*ROL*/ "-zAa-x-X",
+/*LSR*/ "-zAa-x-X",
+/*ROR*/ "-zAa-x-X",
+/*STX*/ "-z.a-y.-",
+/*LDX*/ "#z.a-y.Y",
+/*DEC*/ "-z.a-x-X",
+/*INC*/ "-z.a-x-X"
+},
+};
+
+                                        *rel
+        000xx   001xx   010xx   011xx   100xx   101xx   110xx   111xx
+        00      04      08      0C      10      14      18      1C
+00  BRK BRK     -       PHP     -       BPL     -       CLC     -
+20  BIT *       zp      PLP     abs     BMI     -       SEC     -
+40  JMP RTI     -       PHA     abs     BVC     -       CLI     -
+60  JMP RTS     -       PLA     ind     BVS     -       SEI     -
+80  STY -       zp      DEY     abs     BCC     zp,X    TYA     -
+A0  LDY #       zp      TAY     abs     BCS     zp,X    CLV     abs,X
+C0  CPY #       zp      INY     abs     BNE     -       CLD     -
+E0  CPX #       zp      INX     abs     BEQ     -       SED     -
+
+
+        01      05      09      0D      11      15      19      1D
+00  ORA X,ind   zp      #       abs     ind,Y   zp,X    abs,Y   abs,X
+20  AND
+40  EOR
+60  ADC
+80  STA                 -
+A0  LDA
+C0  CMP
+E0  SBC
+
+        02      06      0A      0E      12      16      1A      1E
+00  ASL -       zp      A       abs     -       zp,X    -       abs,X
+20  ROL -       zp      A       abs     -       zp,X    -       abs,X
+40  LSR -       zp      A       abs     -       zp,X    -       abs,X
+60  ROR -       zp      A       abs     -       zp,X    -       abs,X
+80  STX -       zp      TXA     abs     -       zp,Y    TXS     -
+A0  LDX #       zp      TAX     abs     -       zp,Y    TSX     abs,Y
+C0  DEC -       zp      DEX     abs     -       zp,X    -       abs,X
+E0  INC -       zp      NOP     abs     -       zp,X    -       abs,X
+
+* = 20  JSR abs
+
+

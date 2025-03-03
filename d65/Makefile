@@ -11,3 +11,6 @@ d65: $(OBJS)
 clean:
 	$(RM) $(OBJS)
 	$(RM) d65
+	$(RM) *.log
+
+# vim:set ts=2 sw=2 noet:

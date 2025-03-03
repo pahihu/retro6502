@@ -11,5 +11,6 @@ a65: $(OBJS)
 clean:
 	$(RM) $(OBJS)
 	$(RM) a65
+	$(RM) *.log
 
 # vim:set ts=3 sw=3 noet:
