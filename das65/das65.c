@@ -107,7 +107,7 @@ Byte vals[NKEYS];
 void emit(char c) { R++; putchar(c); }
 void bl(void) { emit(' '); }
 void cr(void) { emit('\n'); }
-void type(char *s) { char c; while ((c = *s++)) emit(c); }
+void type(const char *s) { char c; while ((c = *s++)) emit(c); }
 void wn(Byte x) { emit("0123456789ABCDEF"[x]); }
 void wb(Byte x) { wn(x >> 4); wn(x & 15); }
 void ww(Word w) { wb(HI(w)); wb(LO(w)); }
@@ -208,11 +208,15 @@ int err(const char *s) {
   return 1;
 }
 
+void errs(const char *msg) {
+  type("Error: "); type(msg); cr();
+}
+
 int digitq(int *d, int c, int base)
 {
   int ret;
 
-  if (36 == base) {
+  if (256 == base) {
     *d = c;
     return ('A' <= c) && (c <= 'Z');
   }
@@ -241,7 +245,7 @@ const char* getnum(const char *s)
     base = 2; c = *++s;
   }
   else if ('\'' == c) {
-    base = 36; c = *++s;
+    base = 256; c = *++s;
   }
   Addr = 0;
   while (digitq(&d, c, base)) {
@@ -250,6 +254,35 @@ const char* getnum(const char *s)
   }
   return s;
 }
+
+void sb(void) { M[P++] = LO(Addr); }
+void sw(void) { sb(); Addr >>= 8; sb(); }
+void sr(void) {
+  int disp = Addr - (P + 1);
+  if (disp < -128 || disp > 127) {
+    errs("Bxx out of range");
+    disp = 0;
+  }
+  M[P++] = LO(disp);
+}
+
+int instemit(Byte opcode)
+{
+  Word savP;
+
+  savP = P;
+  M[P++] = opcode;
+  switch(AMode) {
+  case 'V': case 'z': case '#': case 'W': case 'x': case 'y':
+    sb(); break;
+  case 'a': case 'Y': case 'X': case 'I':
+    sw(); break;
+  case 'r': sr(); break;
+  case '.': break; /* implied */
+  }
+  return P - savP;
+}
+
 
 int parse(const char *s) {
   char c;
