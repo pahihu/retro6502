@@ -5,7 +5,7 @@ TARGET=das65
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $(OBJS)
-	strip $@
+	# strip $@
 	size $@
 
 clean:

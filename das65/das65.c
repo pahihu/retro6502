@@ -103,8 +103,8 @@ Byte vals[NKEYS];
 #define HI(x) LO((x) >> 8)
 
 void emit(char c) { R++; putchar(c); }
-void bl() { emit(' '); }
-void cr() { emit('\n'); }
+void bl(void) { emit(' '); }
+void cr(void) { emit('\n'); }
 void type(char *s) { char c; while ((c = *s++)) emit(c); }
 void wn(Byte x) { emit("0123456789ABCDEF"[x]); }
 void wb(Byte x) { wn(x >> 4); wn(x & 15); }
@@ -168,7 +168,7 @@ void hput(const char *s, int n, Byte b)
   vals[x] = b;
 }
 
-void fillh()
+void fillh(void)
 {
   int i, j, k;
   Byte opcode;
@@ -276,9 +276,9 @@ ParseIdx:
   return 0;
 }
 
-void b() { emit('$'); wb(M[P++]); }
-void w() { emit('$'); wb(M[P+1]); wb(M[P]); P+=2; }
-void r() { int disp = M[P++]; if (disp > 127) disp -= 256; disp += P; emit('$'); ww(disp); }
+void b(void) { emit('$'); wb(M[P++]); }
+void w(void) { emit('$'); wb(M[P+1]); wb(M[P]); P+=2; }
+void r(void) { int disp = M[P++]; if (disp > 127) disp -= 256; disp += P; emit('$'); ww(disp); }
 void prm(const char *s) {
     int i, n = '.' == *s ? 5 : 3;
     for (i = 0; i < n; i++)
@@ -286,7 +286,7 @@ void prm(const char *s) {
     bl();
 }
 
-void usage()
+void usage(void)
 {
   type("usage: d65 rom.bin [addr]\n");
   exit(1);
@@ -305,20 +305,21 @@ int main(int argc, char*argv[])
   if (NULL == fin)
     usage();
 
+  P = 0;
+  if (argc > 2)
+    P = strtol(argv[2], NULL, 16);
+
   fseek(fin, 0, SEEK_END);
   nBytes = ftell(fin);
   fseek(fin, 0, SEEK_SET);
 
   B = (Byte*) malloc(nBytes);
+  LIMIT = P + nBytes;
   nBytes -= fread(B, 1, nBytes, fin);
   fclose(fin);
 
-  P = 0;
-  if (argc > 2)
-    P = strtol(argv[2], NULL, 16);
-
   /* adjust M to M'[P] = M[0] */
-  M = B - P; LIMIT = P + nBytes;
+  M = B - P;
   while (P < LIMIT) {
       Byte I;
       Word S;
