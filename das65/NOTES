@@ -122,4 +122,61 @@ E0  INC -       zp      NOP     abs     -       zp,X    -       abs,X
 
 * = 20  JSR abs
 
+NMI   $FFFA-$FFFB
+RST   $FFFC-$FFFD
+IRQ   $FFFE-$FFFF
 
+
+arithmetic
+   ADC CMP CPX CPY DEC DEX DEY INC INX INY SBC
+load/store
+   LDA LDX LDY STA STX STY TAX TAY TSX TXA TXS TYA
+logical
+   AND ASL BIT EOR LSR ORA ROL ROR
+branching
+   BCC BCS BEQ BMI BNE BPL BVC BVS
+jumps and calls
+   JMP JSR RTS RTI
+flag manipulation
+   CLC CLD CLI CLV SEC SED SEI
+system
+   BRK NOP
+stack
+   PHA PHP PLA PLP
+
+
+; periodic IRQ (7) for context switch
+; xx SR PCL PCH
+; ^
+3     PHA            ; save regs (13)
+5     TYA PHA        ; \
+5     TXA PHA        ;  \------------
+2     TSX
+3     LDY $TID
+4     STX $TASKS,Y   ; [9
+
+2     INY            ; get next task
+2     TYA
+2     AND #MAXTSK
+3     STA $TID
+2     TAY            ; [11
+
+4     LDX $TASKS,Y   ; load task's SP
+2     TXS
+6     PLA TAY        ; load regs (16)
+6     PLA TAX        ; \
+4     PLA            ;  \------------
+6     RTI            ; [12
+
+
+b) 5     JMP (xxxx)     ; next task changing, stack empty/no regs
+
+a) 3     JMP TASK2      ; next task is fixed, stack empty/no regs
+
+
+6509
+====
+$0000 execute register, init to $F
+$0001 indirect register, init to $F
+
+LDA (zp),Y/STA (zp),Y uses the indirect reg.

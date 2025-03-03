@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define MIN(a,b)  ((a) < (b) ? (a) : (b))
+
 /* addressing mode encoding
 
 00  X,ind   V   (aa,X)  1
@@ -206,9 +208,46 @@ int err(const char *s) {
   return 1;
 }
 
-const char* hex(const char *s)
+int digitq(int *d, int c, int base)
 {
-  /* TODO */
+  int ret;
+
+  if (36 == base) {
+    *d = c;
+    return ('A' <= c) && (c <= 'Z');
+  }
+  ret = ('0' <= c) && (c < '0' + MIN(base, 10));
+  *d = c - '0';
+  if (16 == base && !ret) {
+    ret = ('A' <= c) && (c <= 'F');
+    if (ret)
+      *d = c - 'A' + 10;
+  }
+  return ret;
+}
+
+const char* getnum(const char *s)
+{
+  int base, c, d;
+
+  base = 10; c = *s;
+  if ('$' == c) {
+    base = 16; c = *++s;
+  }
+  else if ('@' == c) {
+    base = 8; c = *++s;
+  }
+  else if ('%' == c) {
+    base = 2; c = *++s;
+  }
+  else if ('\'' == c) {
+    base = 36; c = *++s;
+  }
+  Addr = 0;
+  while (digitq(&d, c, base)) {
+    Addr = base * Addr + d;
+    c = *++s;
+  }
   return s;
 }
 
@@ -242,8 +281,7 @@ int parse(const char *s) {
   } else if ('(' == c) {
     c = *s++;
   }
-  if ('$' != c) return err(s);
-  s = hex(s); c = *s++;
+  s = getnum(s); c = *s++;
   if (!AMode) AMode = Addr < 256 ? 'z' : 'a';
 
   /* aaa[,XY]')'[,XY] */
